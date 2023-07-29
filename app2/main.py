@@ -1,5 +1,6 @@
 import os
 import sys
+import logging
 
 # Get the parent directory of app1 (the outer directory)
 parent_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -7,11 +8,10 @@ print("parent: ", parent_dir)
 # Add the parent directory to the Python path
 sys.path.append(parent_dir)
 
-import logging
 
-from tasks import process_async_notify_task, process_sync_notify_task
+from tasks import process_async_notify_task, process_sync_notify_task  # noqa: E402
 
-from app2.config.pika_config import pika_config
+from app2.config.pika_config import pika_config  # noqa: E402
 
 # Setup logging
 logging.basicConfig(
