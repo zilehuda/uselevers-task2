@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+
 from app1 import tasks
 from app1.config.pika_config import PikaConfig
 from app1.services.pika_service import PikaService

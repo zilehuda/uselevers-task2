@@ -1,7 +1,9 @@
-import pika
 from dataclasses import dataclass
-from .app_config import RABBITMQ_HOST
 from functools import lru_cache
+
+import pika
+
+from .app_config import RABBITMQ_HOST
 
 
 @dataclass

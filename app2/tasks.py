@@ -1,6 +1,8 @@
-from app2.celery_app import app
 from datetime import datetime
+
 import pika
+
+from app2.celery_app import app
 from app2.config.pika_config import pika_config
 
 

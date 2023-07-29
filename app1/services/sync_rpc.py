@@ -1,5 +1,7 @@
-import pika
 import uuid
+
+import pika
+
 from app1.config.pika_config import pika_config
 
 

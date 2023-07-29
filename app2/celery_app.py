@@ -1,7 +1,6 @@
 from celery import Celery
 from celery.schedules import crontab
 
-
 app = Celery("app2")
 app.config_from_object("app2.config.celeryconfig")
 
