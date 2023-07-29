@@ -1,0 +1,74 @@
+version: "3.8"
+
+services:
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    volumes:
+      - ~/.docker-conf/rabbitmq/data/:/var/lib/rabbitmq/
+      - ~/.docker-conf/rabbitmq/log/:/var/log/rabbitmq
+
+  app1_api:
+    build: app1/
+    command: uvicorn app1.main:app --reload --port=8000 --host=0.0.0.0
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    restart: always
+    volumes:
+      - .:/app1
+    depends_on:
+      - rabbitmq
+
+
+  app1_worker:
+    build: app1/
+    command: celery -A app1.celery_app worker --loglevel=info
+    volumes:
+      - .:/app1
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - app1_api
+      - rabbitmq
+
+  app2_consumer:
+      build: app2/
+      command: python main.py
+      volumes:
+        - ./app2:/app2
+      restart: always
+      env_file:
+        - .env
+      depends_on:
+        # - app2_consumer
+        - rabbitmq
+
+  app2_worker:
+      build: app2/
+      command: celery -A app2.celery_app worker --loglevel=info
+      volumes:
+        - .:/app2
+      restart: always
+      env_file:
+        - .env
+      depends_on:
+        - app2_consumer
+        - rabbitmq
+  
+  app2_scheduler:
+    build: app2/
+    command: celery -A app2.celery_app beat --loglevel=info
+    volumes:
+      - .:/app2
+    restart: always
+    env_file:
+      - .env
+    depends_on:
+      - app2_consumer
+      - app2_worker
+      - rabbitmq
